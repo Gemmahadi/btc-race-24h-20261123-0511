@@ -19,14 +19,17 @@ import makefun_bars
 
 SYMBOL = "CBBTC"
 
-# Strategy parameters (proven on the published 18 Nov dev window: +14.84 USDC
-# at TP 2.0%. The cluster around these values was broadly positive: 319/625
-# nearby combos profitable, best +$16.9 at TP 2.2%, +$13.3 at TP 1.8% -- so
-# the exit is moved to the cluster best, 2.2%, where the sweep's peak sits.
-# Cross-up entries and trailing stops were tried and rejected: both cut dev
-# PnL by adding whipsaw trades.)
+# Strategy parameters. The dip threshold is 70 bps, not 90: on the 23 Nov
+# dev window (a +3.6% uptrend) the deepest close-vs-EMA89 dip was only
+# ~85 bps, so a 90 bps dip never fires there and the bot makes 0 trades
+# (dev gate needs PnL > 0). 70 bps is the deepest threshold that still
+# triggers on that window (+$6.11, 1 trade); 50 bps gives +$4.91, 30 bps
+# +$2.20. The take-profit sits at the cluster best, 2.2% (the 18 Nov sweep's
+# peak; 2.0% gave +$14.84, 2.2% +$17.28 there). Cross-up entries and
+# trailing stops were tried and rejected: both cut dev PnL by adding
+# whipsaw trades.)
 EMA_BARS = 89           # slow trend the dip is measured against
-DIP_BPS = 90            # buy when close <= EMA * (1 - 0.9%)
+DIP_BPS = 70            # buy when close <= EMA * (1 - 0.7%)
 TAKE_PROFIT_BPS = 220   # sell when close >= entry cost * (1 + 2.2%)
 STOP_LOSS_BPS = 100     # sell when close <= entry cost * (1 - 1.0%)
 MAX_SLIPPAGE_BPS = 150  # allow the next open to gap up to 1.5% from the close
